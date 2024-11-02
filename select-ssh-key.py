@@ -1,8 +1,13 @@
 import os
 import sys
 
-# Define the SSH directory and project directory
+# Define the SSH directory and available email addresses. 
 SSH_DIR = os.path.join(os.path.expanduser("~"), ".ssh")
+EMAILS = [
+    "personal@example.com",
+    "work@example.com",
+    "other@example.com"
+]
 
 # List available SSH keys in the directory, excluding .pub files
 ssh_keys = [f for f in os.listdir(SSH_DIR) if f.startswith("id_rsa") and not f.endswith(".pub")]
@@ -25,6 +30,25 @@ except ValueError:
 # Get the selected SSH key file path
 ssh_key_file = os.path.join(SSH_DIR, ssh_keys[choice])
 ssh_key_path = ssh_key_file.replace("\\", "/")
+
+# Prompt the user to select an email address
+print("\nSelect the email address to set for this session:")
+for index, email in enumerate(EMAILS, start=1):
+    print(f"  {index}. {email}")
+
+try:
+    email_choice = int(input("Enter the number of the email address: ")) - 1
+    if email_choice < 0 or email_choice >= len(EMAILS):
+        print("Invalid choice. Exiting.")
+        sys.exit(1)
+except ValueError:
+    print("Invalid input. Please enter a number.")
+    sys.exit(1)
+
+# Get the selected email
+selected_email = EMAILS[email_choice]
+# Generate Git command to set the email
+set_email_command = f'git config user.email "{selected_email}"'
 
 # Prompt the user for the git operation
 git_operations = ["pull", "push", "fetch"]
@@ -68,12 +92,16 @@ git_operation = git_operations[git_choice]
 # Construct the GIT_SSH_COMMAND
 GIT_SSH_COMMAND = f'GIT_SSH_COMMAND="ssh -i {ssh_key_path}" git {git_operation} origin {branch}'
 
-print(f"\nUsing SSH key: {ssh_key_path}")
-print(f"Selected operation: git {git_operation}")
+print(f"\SSH key: {ssh_key_path}")
+print(f"Git author email: {selected_email}")
+print(f"Git operation: git {git_operation}")
 print("Run the following command to use this SSH key and git operation:")
-print(GIT_SSH_COMMAND)
+
+# Display the combined command
+combined_command = f'{set_email_command}; {GIT_SSH_COMMAND}'
+print(combined_command)
 
 # Copy command to clipboard (for Windows only)
 if sys.platform == "win32":
-    os.system(f'echo {GIT_SSH_COMMAND.strip()}| clip')
+    os.system(f'echo {combined_command.strip()}| clip')
     print("The command has been copied to your clipboard. You can now paste it into your terminal.")
