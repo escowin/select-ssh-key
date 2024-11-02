@@ -92,9 +92,10 @@ git_operation = git_operations[git_choice]
 # Construct the GIT_SSH_COMMAND
 GIT_SSH_COMMAND = f'GIT_SSH_COMMAND="ssh -i {ssh_key_path}" git {git_operation} origin {branch}'
 
-print(f"\nSSH key:             {ssh_key_path}")
+print(f"\nSSH key:            {ssh_key_path}")
 print(f"Git author email:   {selected_email}")
-print(f"Git operation:      git {git_operation}")
+print(f"Git operation:      {git_operation}")
+print(f"Git branch:         {branch}")
 
 # Display the Set Email Authorship command
 print("\nRun the following command to set the authorship before making a git commit:")

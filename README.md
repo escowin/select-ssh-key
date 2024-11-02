@@ -2,14 +2,14 @@
 
 ### Table of Contents
 
-1. [Overview](#overview)
-2. [Why This Script is Helpful](#why-this-script-is-helpful)
-3. [Requirements](#requirements)
-4. [How to Use the Script](#how-to-use-the-script)
+- [Overview](#overview)
+- [Why This Script is Helpful](#why-this-script-is-helpful)
+- [Requirements](#requirements)
+- [How to Use the Script](#how-to-use-the-script)
    - [Run the Script](#run-the-script)
    - [Optional: Create a Desktop Shortcut](#optional-create-a-desktop-shortcut)
    - [Example Usage](#example-usage)
-5. [Troubleshooting](#troubleshooting)
+- [Troubleshooting](#troubleshooting)
 
 ---
 
@@ -38,7 +38,7 @@ The `.cmd` file allows for quick execution of the Python script, making it simpl
 
 #### Run the Script
 
-- **Double-click the `.cmd` file** to open a terminal or run `python select-ssh-key.py`` to execute the script.
+- **Double-click the `.cmd` file** to open a terminal or run `python select-ssh-key.py` to execute the script.
 - Follow the prompts to:
   - Select an SSH key
   - Choose a Git author email
@@ -52,16 +52,46 @@ The `.cmd` file allows for quick execution of the Python script, making it simpl
 
 #### Example Usage
 
-1. **Run the `.cmd` file**: Double-click `run-select-ssh-key.cmd` to start.
-2. **Follow the Prompts**:
-   - Select an SSH key by number.
-   - Choose an email address from a predefined list.
-   - Enter the Git operation (e.g., `pull`, `push`) and specify the branch.
-3. **Copy and Paste**: The script generates and copies a combined command to your clipboard in the format:
-   ```plaintext
-   set email command; git ssh command
-   ```
-   Paste this into your terminal to set the email and execute the Git command in one step.
+```plaintext
+$ python select_ssh_key.py
+Select the SSH key file to use:
+  1. id_rsa_personal
+  2. id_rsa_work
+Enter the number of the SSH key file: 2
+
+Select the email address to set for this session:
+  1. personal@example.com
+  2. work@example.com
+Enter the number of the email address: 2
+
+Select the git operation to perform:
+  1. pull
+  2. push
+  3. fetch
+Enter the number of the git operation: 1
+
+Select the branch to work with:
+  1. main
+  2. develop
+  3. other
+Enter the number of the branch: 3
+Enter the branch name: feature/new-feature
+
+SSH key:             C:/Users/username/.ssh/id_rsa_work
+Git author email:    work@example.com
+Git operation:       pull
+Git branch:          feature/new-feature
+
+Run the following command to use this SSH key and git operation:
+Using SSH key: C:/Users/username/.ssh/id_rsa_work
+
+Run the following command to use this SSH key:
+GIT_SSH_COMMAND="ssh -i C:/Users/username/.ssh/id_rsa_work" git pull origin feature/new-feature
+
+The SSH command has been copied to the clipboard. You can now paste it into the terminal.
+```
+
+The command sets GIT_SSH_COMMAND with the selected SSH key, Git operation, and branch, allowing you to execute a custom Git command with minimal effort.
 
 ### Troubleshooting
 
