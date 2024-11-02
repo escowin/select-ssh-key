@@ -41,11 +41,32 @@ except ValueError:
     print("Invalid input. Please enter a number.")
     sys.exit(1)
 
+# Prompt for branch selection
+print("Select the branch to work with:")
+print("  1. main")
+print("  2. develop")
+print("  3. other")
+
+try:
+    branch_choice = int(input("Enter the number of the branch: "))
+    if branch_choice == 1:
+        branch = "main"
+    elif branch_choice == 2:
+        branch = "develop"
+    elif branch_choice == 3:
+        branch = input("Enter the branch name: ").strip()
+    else:
+        print("Invalid choice. Exiting.")
+        sys.exit(1)
+except ValueError:
+    print("Invalid input. Please enter a number.")
+    sys.exit(1)
+
 # Get the selected git operation
 git_operation = git_operations[git_choice]
 
 # Construct the GIT_SSH_COMMAND
-GIT_SSH_COMMAND = f'GIT_SSH_COMMAND="ssh -i {ssh_key_path}" git {git_operation} origin feature/styles'
+GIT_SSH_COMMAND = f'GIT_SSH_COMMAND="ssh -i {ssh_key_path}" git {operation} origin {branch}'
 
 print(f"\nUsing SSH key: {ssh_key_path}")
 print(f"Selected operation: git {git_operation}")
