@@ -82,8 +82,8 @@ Git author email:    work@example.com
 Git operation:       pull
 Git branch:          feature/new-feature
 
-Run the following command to use this SSH key and git operation:
-Using SSH key: C:/Users/username/.ssh/id_rsa_work
+Run the following command to set the authorship before making a git commit:
+git config user.email "work@example.com"
 
 Run the following command to use this SSH key:
 GIT_SSH_COMMAND="ssh -i C:/Users/username/.ssh/id_rsa_work" git pull origin feature/new-feature
