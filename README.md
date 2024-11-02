@@ -1,111 +1,72 @@
-Here’s the updated documentation to reflect the new features and changes in the code, including the selection of Git operations, email authorship, and copying the full command to the clipboard.
+## Documentation: SSH Key Selection and Git Operation Script for GitHub Repositories
+
+### Table of Contents
+
+1. [Overview](#overview)
+2. [Why This Script is Helpful](#why-this-script-is-helpful)
+3. [Requirements](#requirements)
+4. [How to Use the Script](#how-to-use-the-script)
+   - [Run the Script](#run-the-script)
+   - [Optional: Create a Desktop Shortcut](#optional-create-a-desktop-shortcut)
+   - [Example Usage](#example-usage)
+5. [Troubleshooting](#troubleshooting)
 
 ---
 
-## Documentation: SSH Key Selection and Git Operation Script for GitHub Repositories
-
 ### Overview
 
-This Python script assists in managing multiple SSH keys, setting Git author email, selecting operations, and targeting branches for GitHub repositories. It is useful for switching between GitHub accounts (e.g., personal and work) or managing separate repositories that require different SSH keys.
+This Python-based tool helps manage multiple SSH keys for GitHub, select Git operations, and specify branches—all within a single workflow. It’s especially useful if you have separate GitHub accounts or repositories requiring different SSH keys.
 
-The script lists available SSH keys in your `.ssh` directory, prompts for an email address to set as the Git author, lets you select a Git operation (e.g., `pull`, `push`), and specifies a branch. It then constructs and copies a combined command to your clipboard for easy pasting and execution.
+The repository includes a `.cmd` file for Windows, allowing you to run the Python script easily. Additionally, you can create a desktop shortcut for one-click access.
 
 ### Why This Script is Helpful
 
-When working with multiple GitHub accounts or repositories, each associated with a unique SSH key, switching between them can be cumbersome. This script provides an efficient way to choose the correct SSH key, set an author email, specify a Git operation, and pick a branch, all in one go without needing to reconfigure global SSH settings or Git settings.
+Switching between multiple GitHub accounts or specific repositories often requires different SSH keys. This tool enables you to:
 
-#### Common Scenarios
-- **Separate GitHub Accounts**: Easily switch between SSH keys for accessing personal and work GitHub accounts.
-- **Key-Specific Repositories**: Use the correct SSH key, Git operation, and branch to avoid authentication or history issues.
-- **Email Authorship**: Set the Git author email dynamically, which is especially useful when contributing across multiple accounts.
+- Select an SSH key from your `.ssh` directory
+- Set a Git author email address dynamically
+- Choose a Git operation and specify a branch
+
+The `.cmd` file allows for quick execution of the Python script, making it simple to run this tool whenever needed.
 
 ### Requirements
 
-- **Python 3**: Ensure Python 3 is installed.
-- **Configured SSH Keys**: You must have SSH keys stored in your `.ssh` directory. This script automatically excludes `.pub` files (public keys).
+- **Python 3**: Ensure Python 3 is installed on your system.
+- **Configured SSH Keys**: You must have SSH keys in your `.ssh` directory, with names starting with `id_rsa`.
 
 ### How to Use the Script
 
-1. **Save the Script**: Copy the Python script and save it as `select_ssh_key.py`.
+#### Run the Script
 
-2. **Run the Script**:
-   Open a terminal and run the script with:
-   ```bash
-   python select_ssh_key.py
+- **Double-click the `.cmd` file** to open a terminal or run `python select-ssh-key.py`` to execute the script.
+- Follow the prompts to:
+  - Select an SSH key
+  - Choose a Git author email
+  - Specify the Git operation and branch
+- The script will copy the SSH command to your clipboard (on Windows), making it easy to paste and run in your terminal.
+
+#### Optional: Create a Desktop Shortcut
+
+- **Right-click** on the `.cmd` file and select **Create Shortcut**.
+- **Move the shortcut** to your desktop for one-click access to the script.
+
+#### Example Usage
+
+1. **Run the `.cmd` file**: Double-click `run-select-ssh-key.cmd` to start.
+2. **Follow the Prompts**:
+   - Select an SSH key by number.
+   - Choose an email address from a predefined list.
+   - Enter the Git operation (e.g., `pull`, `push`) and specify the branch.
+3. **Copy and Paste**: The script generates and copies a combined command to your clipboard in the format:
+   ```plaintext
+   set email command; git ssh command
    ```
-
-3. **Choose an SSH Key**:
-   - The script lists available SSH keys (those starting with `id_rsa`).
-   - Enter the number corresponding to the SSH key you wish to use.
-
-4. **Select the Git Author Email**:
-   - Choose the email address you’d like to set as the author for this session.
-   - The script includes a list of emails that can be customized in the `EMAILS` variable.
-
-5. **Specify the Git Operation**:
-   - After selecting the SSH key and email, you’ll be prompted to enter the Git operation you want to perform (`pull`, `push`, or `fetch`).
-
-6. **Choose the Branch**:
-   - You’ll be prompted to select a branch:
-     - `main`
-     - `develop`
-     - `other` (enter a custom branch name when prompted)
-
-7. **Copy and Paste the Command**:
-   - On Windows, the SSH command is copied to the clipboard in the format:
-     ```plaintext
-     GIT_SSH_COMMAND="ssh -i <ssh_key_path>" git <operation> origin <branch>
-     ```
-   - Paste this command into your terminal with `Ctrl + V` (or `Cmd + V` on macOS) to execute it directly.
-
-### Example
-
-```plaintext
-$ python select_ssh_key.py
-Select the SSH key file to use:
-  1. id_rsa_personal
-  2. id_rsa_work
-Enter the number of the SSH key file: 2
-
-Select the email address to set for this session:
-  1. personal@example.com
-  2. work@example.com
-Enter the number of the email address: 2
-
-Select the git operation to perform:
-  1. pull
-  2. push
-  3. fetch
-Enter the number of the git operation: 1
-
-Select the branch to work with:
-  1. main
-  2. develop
-  3. other
-Enter the number of the branch: 3
-Enter the branch name: feature/new-feature
-
-SSH key:             C:/Users/username/.ssh/id_rsa_work
-Git author email:    work@example.com
-Git operation:       git pull
-
-Run the following command to use this SSH key and git operation:
-GIT_SSH_COMMAND="ssh -i C:/Users/username/.ssh/id_rsa_work" git pull origin feature/new-feature
-
-The SSH command has been copied to the clipboard. You can now paste it into the terminal.
-
-```
-
-These two commands streamline work across multiple repositories and accounts.
-
-### Notes
-
-- **Windows Users**: The combined command is automatically copied to the clipboard.
-- **Cross-Platform Compatibility**: The script works on macOS and Linux as well; on these systems, copy the command manually from the terminal.
+   Paste this into your terminal to set the email and execute the Git command in one step.
 
 ### Troubleshooting
 
-- **SSH Key Not Recognized**: Make sure the selected SSH key is registered with your GitHub account. Add or manage SSH keys on GitHub under **Settings > SSH and GPG keys**.
-- **Access Denied Errors**: If you see `Permission denied (publickey)`, verify you’re using the correct SSH key for the intended GitHub account.
+- **Python Path Issues**: Ensure Python is added to your system PATH, so the `python` command works from any directory.
+- **SSH Key Not Recognized**: Verify that the selected SSH key is registered with your GitHub account (Settings > SSH and GPG keys).
+- **Access Denied Errors**: If you see `Permission denied (publickey)`, confirm that you’re using the correct SSH key for the intended GitHub account.
 
-This script simplifies the management of multiple SSH keys, Git operations, and author emails, making it easy to work across multiple accounts and repositories without modifying global configurations.
+With the `.cmd` file and optional desktop shortcut, running this tool becomes quick and convenient, making it ideal for users managing multiple GitHub accounts or repositories.
