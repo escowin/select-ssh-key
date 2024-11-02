@@ -27,7 +27,7 @@ ssh_key_file = os.path.join(SSH_DIR, ssh_keys[choice])
 ssh_key_path = ssh_key_file.replace("\\", "/")
 
 # Prompt the user for the git operation
-git_operations = ["pull", "push"]
+git_operations = ["pull", "push", "fetch"]
 print("Select the git operation to perform:")
 for index, operation in enumerate(git_operations, start=1):
     print(f"  {index}. {operation}")
@@ -66,7 +66,7 @@ except ValueError:
 git_operation = git_operations[git_choice]
 
 # Construct the GIT_SSH_COMMAND
-GIT_SSH_COMMAND = f'GIT_SSH_COMMAND="ssh -i {ssh_key_path}" git {operation} origin {branch}'
+GIT_SSH_COMMAND = f'GIT_SSH_COMMAND="ssh -i {ssh_key_path}" git {git_operation} origin {branch}'
 
 print(f"\nUsing SSH key: {ssh_key_path}")
 print(f"Selected operation: git {git_operation}")
