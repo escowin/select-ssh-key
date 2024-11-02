@@ -52,7 +52,7 @@ set_email_command = f'git config user.email "{selected_email}"'
 
 # Prompt the user for the git operation
 git_operations = ["pull", "push", "fetch"]
-print("Select the git operation to perform:")
+print("\nSelect the git operation to perform:")
 for index, operation in enumerate(git_operations, start=1):
     print(f"  {index}. {operation}")
 
@@ -66,7 +66,7 @@ except ValueError:
     sys.exit(1)
 
 # Prompt for branch selection
-print("Select the branch to work with:")
+print("\nSelect the branch to work with:")
 print("  1. main")
 print("  2. develop")
 print("  3. other")
@@ -92,10 +92,11 @@ git_operation = git_operations[git_choice]
 # Construct the GIT_SSH_COMMAND
 GIT_SSH_COMMAND = f'GIT_SSH_COMMAND="ssh -i {ssh_key_path}" git {git_operation} origin {branch}'
 
-print(f"\SSH key: {ssh_key_path}")
-print(f"Git author email: {selected_email}")
-print(f"Git operation: git {git_operation}")
-print("Run the following command to use this SSH key and git operation:")
+print(f"\nSSH key:          {ssh_key_path}")
+print(f"Git author email:   {selected_email}")
+print(f"Git operation:      git {git_operation}")
+
+print("\nRun the following command to use this SSH key and git operation:")
 
 # Display the combined command
 combined_command = f'{set_email_command}; {GIT_SSH_COMMAND}'
