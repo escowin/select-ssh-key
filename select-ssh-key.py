@@ -48,7 +48,7 @@ except ValueError:
 # Get the selected email
 selected_email = EMAILS[email_choice]
 # Generate Git command to set the email
-set_email_command = f'git config user.email "{selected_email}"'
+SET_EMAIL_COMMAND = f'git config user.email "{selected_email}"'
 
 # Prompt the user for the git operation
 git_operations = ["pull", "push", "fetch"]
@@ -92,17 +92,19 @@ git_operation = git_operations[git_choice]
 # Construct the GIT_SSH_COMMAND
 GIT_SSH_COMMAND = f'GIT_SSH_COMMAND="ssh -i {ssh_key_path}" git {git_operation} origin {branch}'
 
-print(f"\nSSH key:          {ssh_key_path}")
+print(f"\nSSH key:             {ssh_key_path}")
 print(f"Git author email:   {selected_email}")
 print(f"Git operation:      git {git_operation}")
 
+# Display the Set Email Authorship command
+print("\nRun the following command to set the authorship before making a git commit:")
+print(SET_EMAIL_COMMAND)
+
+# Display the SSH command
 print("\nRun the following command to use this SSH key and git operation:")
+print(GIT_SSH_COMMAND)
 
-# Display the combined command
-combined_command = f'{set_email_command}; {GIT_SSH_COMMAND}'
-print(combined_command)
-
-# Copy command to clipboard (for Windows only)
+# Copy the SSH command to clipboard (for Windows only)
 if sys.platform == "win32":
-    os.system(f'echo {combined_command.strip()}| clip')
-    print("The command has been copied to your clipboard. You can now paste it into your terminal.")
+    os.system(f'echo {GIT_SSH_COMMAND.strip()}| clip')
+    print("\nThe SSH command has been copied to the clipboard. You can now paste it into the terminal.")
