@@ -2,151 +2,149 @@ import os
 import sys
 from datetime import datetime
 
-# Define the SSH directory and available email addresses.
+# Constants
 SSH_DIR = os.path.join(os.path.expanduser("~"), ".ssh")
-EMAILS = [
-    "personal@example.com",
-    "work@example.com",
-    "other@example.com"
-]
+EMAILS = ["personal@example.com", "work@example.com"]
+GIT_OPERATIONS = ["pull", "push", "fetch"]
+GIT_BRANCHES = ["main", "develop", "feature/*", "other"]
 
 # Startup message
-current_year = datetime.now().year
-print(f"\n:: SSH Key Selection Script::\n:: © {
-      current_year} Edwin M. Escobar ::\n")
+def display_startup_message():
+    current_year = datetime.now().year
+    print(f"\n:: SSH Key Selection Script ::\n:: © {current_year} Edwin M. Escobar ::\n")
 
 # List available SSH keys in the directory, excluding .pub files
-ssh_keys = [f for f in os.listdir(SSH_DIR) if f.startswith(
-    "id_rsa") and not f.endswith(".pub")]
+def list_ssh_keys():
+    return [f for f in os.listdir(SSH_DIR) if f.startswith("id_rsa") and not f.endswith(".pub")]
 
-# Display SSH key options
-print("Select the SSH key file to use:")
-for index, key in enumerate(ssh_keys, start=1):
-    print(f"  {index}. {key}")
-
-# Prompt the user to select an SSH key
-try:
-    choice = int(input("Enter the number of the SSH key file: ")) - 1
-    if choice < 0 or choice >= len(ssh_keys):
-        print("Invalid choice. Exiting.")
+# Prompt user to select SSH key
+def select_ssh_key(ssh_keys):
+    print("Select the SSH key file to use:")
+    for index, key in enumerate(ssh_keys, start=1):
+        print(f"  {index}. {key}")
+    try:
+        choice = int(input("Enter the number of the SSH key file: ")) - 1
+        if 0 <= choice < len(ssh_keys):
+            return os.path.join(SSH_DIR, ssh_keys[choice]).replace("\\", "/")
+        else:
+            print("Invalid choice. Exiting.")
+            sys.exit(1)
+    except ValueError:
+        print("Invalid input. Please enter a number.")
         sys.exit(1)
-except ValueError:
-    print("Invalid input. Please enter a number.")
-    sys.exit(1)
 
-# Get the selected SSH key file path
-ssh_key_file = os.path.join(SSH_DIR, ssh_keys[choice])
-ssh_key_path = ssh_key_file.replace("\\", "/")
-
-# Prompt the user to select an email address
-print("\nSelect the email address to set for this session:")
-for index, email in enumerate(EMAILS, start=1):
-    print(f"  {index}. {email}")
-
-try:
-    email_choice = int(input("Enter the number of the email address: ")) - 1
-    if email_choice < 0 or email_choice >= len(EMAILS):
-        print("Invalid choice. Exiting.")
+# Prompt user to select email
+def select_email():
+    print("\nSelect the email address to set for this session:")
+    for index, email in enumerate(EMAILS, start=1):
+        print(f"  {index}. {email}")
+    try:
+        choice = int(input("Enter the number of the email address: ")) - 1
+        if 0 <= choice < len(EMAILS):
+            return EMAILS[choice]
+        else:
+            print("Invalid choice. Exiting.")
+            sys.exit(1)
+    except ValueError:
+        print("Invalid input. Please enter a number.")
         sys.exit(1)
-except ValueError:
-    print("Invalid input. Please enter a number.")
-    sys.exit(1)
 
-# Get the selected email
-selected_email = EMAILS[email_choice]
-# Generate Git command to set the email
-SET_EMAIL_COMMAND = f'git config user.email "{selected_email}"'
-
-# Prompt the user for the git operation
-git_operations = ["pull", "push", "fetch"]
-print("\nSelect the git operation to perform:")
-for index, operation in enumerate(git_operations, start=1):
-    print(f"  {index}. {operation}")
-
-try:
-    git_choice = int(input("Enter the number of the git operation: ")) - 1
-    if git_choice < 0 or git_choice >= len(git_operations):
-        print("Invalid choice. Exiting.")
+# Prompt user to select Git operation
+def select_git_operation():
+    print("\nSelect the git operation to perform:")
+    for index, operation in enumerate(GIT_OPERATIONS, start=1):
+        print(f"  {index}. {operation}")
+    try:
+        choice = int(input("Enter the number of the git operation: ")) - 1
+        if 0 <= choice < len(GIT_OPERATIONS):
+            return GIT_OPERATIONS[choice]
+        else:
+            print("Invalid choice. Exiting.")
+            sys.exit(1)
+    except ValueError:
+        print("Invalid input. Please enter a number.")
         sys.exit(1)
-except ValueError:
-    print("Invalid input. Please enter a number.")
-    sys.exit(1)
 
-# Prompt for branch selection
-print("\nSelect the branch to work with:")
-print("  1. main")
-print("  2. develop")
-print("  3. other")
-
-try:
-    branch_choice = int(input("Enter the number of the branch: "))
-    if branch_choice == 1:
-        branch = "main"
-    elif branch_choice == 2:
-        branch = "develop"
-    elif branch_choice == 3:
-        branch = input("Enter the branch name: ").strip()
-    else:
-        print("Invalid choice. Exiting.")
+# Prompt user to select branch
+def select_branch():
+    print("\nSelect the branch to work with:")
+    for index, branch in enumerate(GIT_BRANCHES, start=1):
+        print(f"  {index}. {branch}")
+    try:
+        choice = int(input("Enter the number of the branch: ")) - 1
+        if 0 <= choice < len(GIT_BRANCHES):
+            selected_branch = GIT_BRANCHES[choice]
+            
+            # Handle "feature/*" selection
+            if selected_branch == "feature/*":
+                feature_name = input("Enter the feature name: ").strip()
+                return f"feature/{feature_name}"
+            
+            # Handle "other" selection
+            elif selected_branch == "other":
+                return input("Enter the branch name: ").strip()
+            
+            # Return standard branch names (e.g., "main", "develop")
+            return selected_branch
+        else:
+            print("Invalid choice. Exiting.")
+            sys.exit(1)
+    except ValueError:
+        print("Invalid input. Please enter a number.")
         sys.exit(1)
-except ValueError:
-    print("Invalid input. Please enter a number.")
-    sys.exit(1)
 
-# Get the selected git operation
-git_operation = git_operations[git_choice]
+# Display commands and optionally copy to clipboard
+def display_commands(ssh_key_path, selected_email, git_operation, branch):
+    set_email_command = f'git config user.email "{selected_email}"'
+    git_ssh_command = f'GIT_SSH_COMMAND="ssh -i {ssh_key_path}" git {git_operation} origin {branch}'
 
-# Construct the GIT_SSH_COMMAND
-GIT_SSH_COMMAND = f'GIT_SSH_COMMAND="ssh -i {
-    ssh_key_path}" git {git_operation} origin {branch}'
+    print(f"\nSSH key:            {ssh_key_path}")
+    print(f"Git author email:   {selected_email}")
+    print(f"Git operation:      {git_operation}")
+    print(f"Git branch:         {branch}")
+    print("\nRun the following command to set the authorship before making a git commit:")
+    print(set_email_command)
+    print("\nRun the following command to use this SSH key and git operation:")
+    print(git_ssh_command)
 
-print(f"\nSSH key:            {ssh_key_path}")
-print(f"Git author email:   {selected_email}")
-print(f"Git operation:      {git_operation}")
-print(f"Git branch:         {branch}")
+    # Copy commands to clipboard if on Windows
+    if sys.platform == "win32":
+        commands_to_copy = {
+            "1": ("git set user email", set_email_command),
+            "2": ("git ssh command", git_ssh_command),
+        }
+        copy_to_clipboard(commands_to_copy)
 
-# Display the Set Email Authorship command
-print("\nRun the following command to set the authorship before making a git commit:")
-print(SET_EMAIL_COMMAND)
-
-# Display the SSH command
-print("\nRun the following command to use this SSH key and git operation:")
-print(GIT_SSH_COMMAND)
-
-
-# Copy selected commands to clipboard (for Windows only)
-if sys.platform == "win32":
-
-    # Define the available commands to copy
-    commands_to_copy = {
-        "1": ("git set user email", SET_EMAIL_COMMAND),
-        "2": ("git ssh command", GIT_SSH_COMMAND),
-    }
-
+# Prompt user to copy commands to clipboard (Windows only)
+def copy_to_clipboard(commands):
     while True:
-        # Display command options
         print("\nSelect a command to copy to the clipboard:")
-        for key, (desc, cmd) in commands_to_copy.items():
+        for key, (desc, cmd) in commands.items():
             print(f"  {key}. {desc}")
 
-        # Prompt for user selection
-        selection = input(
-            "Enter the number of the command to copy (or press Enter to skip): ").strip()
-
-        # Copy the selected command
-        if selection in commands_to_copy:
-            command_desc, command = commands_to_copy[selection]
+        selection = input("Enter the number of the command to copy (or press Enter to skip): ").strip()
+        if selection in commands:
+            command_desc, command = commands[selection]
             os.system(f'echo {command.strip()} | clip')
             print(f"\nCopied {command_desc} to clipboard (Use CTRL+V to paste into terminal).")
 
-            # Ask if they want to copy another command
-            another = input(
-                "\nCopy another command? (y/n): ").strip().lower()
+            another = input("\nCopy another command? (y/n): ").strip().lower()
             if another != "y":
                 break
         else:
             print("Invalid selection or no selection made.")
             break
 
-# Exit message
-print("\nExiting.")
+# Main script execution
+if __name__ == "__main__":
+    display_startup_message()
+
+    ssh_keys = list_ssh_keys()
+    ssh_key_path = select_ssh_key(ssh_keys)
+    selected_email = select_email()
+    git_operation = select_git_operation()
+    branch = select_branch()
+
+    display_commands(ssh_key_path, selected_email, git_operation, branch)
+
+    print("\nExiting.")

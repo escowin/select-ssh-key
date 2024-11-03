@@ -73,9 +73,10 @@ Enter the number of the git operation: 1
 Select the branch to work with:
   1. main
   2. develop
-  3. other
+  3. feature/*
+  4. other
 Enter the number of the branch: 3
-Enter the branch name: feature/new-feature
+Enter the feature name: feature/new-feature
 
 SSH key:             C:/Users/username/.ssh/id_rsa_work
 Git author email:    work@example.com
@@ -87,7 +88,6 @@ git config user.email "work@example.com"
 
 Run the following command to use this SSH key:
 GIT_SSH_COMMAND="ssh -i C:/Users/username/.ssh/id_rsa_work" git pull origin feature/new-feature
-
 
 # Windows only
 Select a command to copy to the clipboard:
