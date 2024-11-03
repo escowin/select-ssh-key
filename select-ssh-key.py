@@ -1,7 +1,8 @@
 import os
 import sys
+from datetime import datetime
 
-# Define the SSH directory and available email addresses. 
+# Define the SSH directory and available email addresses.
 SSH_DIR = os.path.join(os.path.expanduser("~"), ".ssh")
 EMAILS = [
     "personal@example.com",
@@ -9,8 +10,14 @@ EMAILS = [
     "other@example.com"
 ]
 
+# Startup message
+current_year = datetime.now().year
+print(f"\n:: SSH Key Selection Script::\n:: © {
+      current_year} Edwin M. Escobar ::\n")
+
 # List available SSH keys in the directory, excluding .pub files
-ssh_keys = [f for f in os.listdir(SSH_DIR) if f.startswith("id_rsa") and not f.endswith(".pub")]
+ssh_keys = [f for f in os.listdir(SSH_DIR) if f.startswith(
+    "id_rsa") and not f.endswith(".pub")]
 
 # Display SSH key options
 print("Select the SSH key file to use:")
@@ -90,7 +97,8 @@ except ValueError:
 git_operation = git_operations[git_choice]
 
 # Construct the GIT_SSH_COMMAND
-GIT_SSH_COMMAND = f'GIT_SSH_COMMAND="ssh -i {ssh_key_path}" git {git_operation} origin {branch}'
+GIT_SSH_COMMAND = f'GIT_SSH_COMMAND="ssh -i {
+    ssh_key_path}" git {git_operation} origin {branch}'
 
 print(f"\nSSH key:            {ssh_key_path}")
 print(f"Git author email:   {selected_email}")
@@ -105,7 +113,40 @@ print(SET_EMAIL_COMMAND)
 print("\nRun the following command to use this SSH key and git operation:")
 print(GIT_SSH_COMMAND)
 
-# Copy the SSH command to clipboard (for Windows only)
+
+# Copy selected commands to clipboard (for Windows only)
 if sys.platform == "win32":
-    os.system(f'echo {GIT_SSH_COMMAND.strip()}| clip')
-    print("\nThe SSH command has been copied to the clipboard. You can now paste it into the terminal.")
+
+    # Define the available commands to copy
+    commands_to_copy = {
+        "1": ("git set user email", SET_EMAIL_COMMAND),
+        "2": ("git ssh command", GIT_SSH_COMMAND),
+    }
+
+    while True:
+        # Display command options
+        print("\nSelect a command to copy to the clipboard:")
+        for key, (desc, cmd) in commands_to_copy.items():
+            print(f"  {key}. {desc}")
+
+        # Prompt for user selection
+        selection = input(
+            "Enter the number of the command to copy (or press Enter to skip): ").strip()
+
+        # Copy the selected command
+        if selection in commands_to_copy:
+            command_desc, command = commands_to_copy[selection]
+            os.system(f'echo {command.strip()} | clip')
+            print(f"\nCopied {command_desc} to clipboard (Use CTRL+V to paste into terminal).")
+
+            # Ask if they want to copy another command
+            another = input(
+                "\nCopy another command? (y/n): ").strip().lower()
+            if another != "y":
+                break
+        else:
+            print("Invalid selection or no selection made.")
+            break
+
+# Exit message
+print("\nExiting.")

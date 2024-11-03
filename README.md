@@ -6,9 +6,9 @@
 - [Why This Script is Helpful](#why-this-script-is-helpful)
 - [Requirements](#requirements)
 - [How to Use the Script](#how-to-use-the-script)
-   - [Run the Script](#run-the-script)
-   - [Optional: Create a Desktop Shortcut](#optional-create-a-desktop-shortcut)
-   - [Example Usage](#example-usage)
+  - [Run the Script](#run-the-script)
+  - [Optional: Create a Desktop Shortcut](#optional-create-a-desktop-shortcut)
+  - [Example Usage](#example-usage)
 - [Troubleshooting](#troubleshooting)
 
 ---
@@ -43,7 +43,7 @@ The `.cmd` file allows for quick execution of the Python script, making it simpl
   - Select an SSH key
   - Choose a Git author email
   - Specify the Git operation and branch
-- The script will copy the SSH command to your clipboard (on Windows), making it easy to paste and run in your terminal.
+- On Windows, the script will prompt you to copy each command individually to your clipboard for easy pasting into the terminal with CTRL+V.
 
 #### Optional: Create a Desktop Shortcut
 
@@ -88,10 +88,30 @@ git config user.email "work@example.com"
 Run the following command to use this SSH key:
 GIT_SSH_COMMAND="ssh -i C:/Users/username/.ssh/id_rsa_work" git pull origin feature/new-feature
 
-The SSH command has been copied to the clipboard. You can now paste it into the terminal.
+
+# Windows only
+Select a command to copy to the clipboard:
+  1. git set user email
+  2. git ssh command
+Enter the number of the command to copy (or press Enter to skip): 1
+
+Copied git set user email to clipboard (Use CTRL+V to paste into terminal).
+
+Copy another command? (y/n): y
+
+Select a command to copy to the clipboard:
+  1. git set user email
+  2. git ssh command
+Enter the number of the command to copy (or press Enter to skip): 2
+
+Copied git ssh command to clipboard (Use CTRL+V to paste into terminal).
+
+Copy another command? (y/n): n
+
+Exiting.
 ```
 
-The command sets GIT_SSH_COMMAND with the selected SSH key, Git operation, and branch, allowing you to execute a custom Git command with minimal effort.
+These dynamically generated commands allows custom Git command executions with minimal effort.
 
 ### Troubleshooting
 
