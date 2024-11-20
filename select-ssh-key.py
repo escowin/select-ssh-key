@@ -19,7 +19,7 @@ def list_ssh_keys():
 
 # Prompt user to select SSH key
 def select_ssh_key(ssh_keys):
-    print("Select the SSH key file to use:")
+    print("\nSelect the SSH key file to use:")
     for index, key in enumerate(ssh_keys, start=1):
         print(f"  {index}. {key}")
     try:
@@ -74,17 +74,11 @@ def select_branch():
         choice = int(input("Enter the number of the branch: ")) - 1
         if 0 <= choice < len(GIT_BRANCHES):
             selected_branch = GIT_BRANCHES[choice]
-            
-            # Handle "feature/*" selection
             if selected_branch == "feature/*":
                 feature_name = input("Enter the feature name: ").strip()
                 return f"feature/{feature_name}"
-            
-            # Handle "other" selection
             elif selected_branch == "other":
                 return input("Enter the branch name: ").strip()
-            
-            # Return standard branch names (e.g., "main", "develop")
             return selected_branch
         else:
             print("Invalid choice. Exiting.")
@@ -93,58 +87,51 @@ def select_branch():
         print("Invalid input. Please enter a number.")
         sys.exit(1)
 
-# Display commands and optionally copy to clipboard
+# Display commands and menu options
 def display_commands(ssh_key_path, selected_email, git_operation, branch):
     set_email_command = f'git config user.email "{selected_email}"'
     git_ssh_command = f'GIT_SSH_COMMAND="ssh -i {ssh_key_path}" git {git_operation} origin {branch}'
+    commands = {"1": set_email_command, "2": git_ssh_command}
 
     print(f"\nSSH key:            {ssh_key_path}")
     print(f"Git author email:   {selected_email}")
     print(f"Git operation:      {git_operation}")
     print(f"Git branch:         {branch}")
-    print("\nRun the following command to set the authorship before making a git commit:")
-    print(set_email_command)
-    print("\nRun the following command to use this SSH key and git operation:")
-    print(git_ssh_command)
+    print("\nCommands:")
+    for key, command in commands.items():
+        print(f"  {key}. {command}")
 
-    # Copy commands to clipboard if on Windows
-    if sys.platform == "win32":
-        commands_to_copy = {
-            "1": ("git set user email", set_email_command),
-            "2": ("git ssh command", git_ssh_command),
-        }
-        copy_to_clipboard(commands_to_copy)
-
-# Prompt user to copy commands to clipboard (Windows only)
-def copy_to_clipboard(commands):
     while True:
-        print("\nSelect a command to copy to the clipboard:")
-        for key, (desc, cmd) in commands.items():
-            print(f"  {key}. {desc}")
+        print("\nMenu:")
+        print("  1. Copy 'git set user email' command")
+        print("  2. Copy 'git ssh command'")
+        print("  3. Generate new commands")
+        print("  4. Exit")
+        choice = input("Choose an option: ").strip()
 
-        selection = input("Enter the number of the command to copy (or press Enter to skip): ").strip()
-        if selection in commands:
-            command_desc, command = commands[selection]
-            os.system(f'echo {command.strip()} | clip')
-            print(f"\nCopied {command_desc} to clipboard (Use CTRL+V to paste into terminal).")
-
-            another = input("\nCopy another command? (y/n): ").strip().lower()
-            if another != "y":
-                break
+        if choice in ["1", "2"]:
+            os.system(f'echo {commands[choice]} | clip')
+            print(f"Command copied: {commands[choice]}")
+        elif choice == "3":
+            return "restart"
+        elif choice == "4":
+            print("Exiting application.")
+            sys.exit(0)
         else:
-            print("Invalid selection or no selection made.")
-            break
+            print("Invalid choice. Try again.")
 
-# Main script execution
-if __name__ == "__main__":
+# Main loop
+def main():
     display_startup_message()
+    while True:
+        ssh_keys = list_ssh_keys()
+        ssh_key_path = select_ssh_key(ssh_keys)
+        selected_email = select_email()
+        git_operation = select_git_operation()
+        branch = select_branch()
+        if display_commands(ssh_key_path, selected_email, git_operation, branch) == "restart":
+            continue
+        break
 
-    ssh_keys = list_ssh_keys()
-    ssh_key_path = select_ssh_key(ssh_keys)
-    selected_email = select_email()
-    git_operation = select_git_operation()
-    branch = select_branch()
-
-    display_commands(ssh_key_path, selected_email, git_operation, branch)
-
-    print("\nExiting.")
+if __name__ == "__main__":
+    main()
